@@ -45,12 +45,11 @@ class _GeneratorPageState extends State<GeneratorPage> {
                         },
                       ),
                       const SizedBox(width: 20),
-                      Consumer<RandomWordsProvider>(
-                          builder: (context, provider, child) => ElevatedButton(
-                              onPressed: () {
-                                provider.getNext(listKey.currentState);
-                              },
-                              child: const Text("Next"))),
+                      ElevatedButton(
+                          onPressed: () {
+                            provider.getNext(listKey.currentState);
+                          },
+                          child: const Text("Next")),
                     ],
                   ),
                 ),
