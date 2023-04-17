@@ -1,23 +1,11 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:namer_app/HistoryListView.dart';
+import 'package:namer_app/main.dart';
+import 'package:provider/provider.dart';
 
 class GeneratorPage extends StatefulWidget {
-  const GeneratorPage(
-      {super.key,
-      required this.pair,
-      required this.getNextWord,
-      required this.toggleFavorites,
-      required this.isFavorite,
-      required this.favorites,
-      required this.history});
-
-  final List<WordPair> history;
-  final WordPair pair;
-  final void Function(AnimatedListState?) getNextWord;
-  final VoidCallback toggleFavorites;
-  final List<WordPair> favorites;
-  final bool Function(WordPair) isFavorite;
+  const GeneratorPage({super.key});
 
   @override
   State<GeneratorPage> createState() => _GeneratorPageState();
@@ -28,46 +16,49 @@ class _GeneratorPageState extends State<GeneratorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3,
-          child: HistoryListView(
-            history: widget.history,
-            isFavorite: widget.isFavorite,
-            listKey: listKey,
-          ),
-        ),
-        const Text("A random idea:"),
-        WordCard(pair: widget.pair),
-        const SizedBox(height: 10),
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FavoriteButton(
-                pair: widget.pair,
-                isFavorite: widget.isFavorite,
-                toggleFavorites: () {
-                  widget.toggleFavorites();
-                },
-              ),
-              const SizedBox(width: 20),
-              ElevatedButton(
-                  onPressed: () {
-                    widget.getNextWord(listKey.currentState);
-                  },
-                  child: const Text("Next")),
-            ],
-          ),
-        ),
-        const Expanded(
-          flex: 2,
-          child: SizedBox(),
-        )
-      ],
-    );
+    return Consumer<RandomWordsProvider>(
+        builder: (context, provider, child) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: HistoryListView(
+                    history: provider.history,
+                    isFavorite: (wordpair) =>
+                        provider.favorites.contains(wordpair),
+                    listKey: listKey,
+                  ),
+                ),
+                const Text("A random idea:"),
+                WordCard(pair: provider.current),
+                const SizedBox(height: 10),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FavoriteButton(
+                        pair: provider.current,
+                        isFavorite: (wordpair) =>
+                            provider.favorites.contains(wordpair),
+                        toggleFavorites: () {
+                          provider.toggleFavorites();
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      ElevatedButton(
+                          onPressed: () {
+                            provider.getNext(listKey.currentState);
+                          },
+                          child: const Text("Next")),
+                    ],
+                  ),
+                ),
+                const Expanded(
+                  flex: 2,
+                  child: SizedBox(),
+                )
+              ],
+            ));
   }
 }
 
