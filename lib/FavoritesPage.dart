@@ -1,16 +1,10 @@
 import 'package:english_words/english_words.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:namer_app/main.dart';
+import 'package:provider/provider.dart';
 
 class FavoritesPage extends StatefulWidget {
-  const FavoritesPage({
-    super.key,
-    required this.favorites,
-    required this.removeFavorite,
-  });
-
-  final void Function(WordPair) removeFavorite;
-  final List<WordPair> favorites;
+  const FavoritesPage({super.key});
 
   @override
   State<FavoritesPage> createState() => _FavoritesPageState();
@@ -21,30 +15,32 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, left: 16.0),
-          child: Text("You have ${widget.favorites.length} favorites"),
-        ),
-        Expanded(
-          child: AnimatedList(
-            key: _listKey,
-            initialItemCount: widget.favorites.length,
-            itemBuilder: (context, index, animation) {
-              final word = widget.favorites[index];
-              return _buildItem(
-                index,
-                word,
-                animation,
-                () => _removeItem(index, word),
-              );
-            },
-          ),
-        ),
-      ],
-    );
+    return Consumer<RandomWordsProvider>(
+        builder: (context, provider, child) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 16.0),
+                  child:
+                      Text("You have ${provider.favorites.length} favorites"),
+                ),
+                Expanded(
+                  child: AnimatedList(
+                    key: _listKey,
+                    initialItemCount: provider.favorites.length,
+                    itemBuilder: (context, index, animation) {
+                      final word = provider.favorites[index];
+                      return _buildItem(
+                        index,
+                        word,
+                        animation,
+                        () => _removeItem(index, word, provider.removeFavorite),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ));
   }
 
   Widget _buildItem(int index, WordPair word, Animation<double> animation,
@@ -60,8 +56,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
         ),
       );
 
-  void _removeItem(int index, WordPair word) {
-    widget.removeFavorite(word);
+  void _removeItem(
+    int index,
+    WordPair word,
+    Function(WordPair) removeFavorite,
+  ) {
+    removeFavorite(word);
     _listKey.currentState?.removeItem(
       index,
       (context, animation) => _buildItem(index, word, animation, null),

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => MyAppState(),
+        create: (context) => RandomWordsProvider(),
         child: MaterialApp(
           title: "Namer App",
           theme: ThemeData(
@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {
+class RandomWordsProvider extends ChangeNotifier {
   var current = WordPair.random();
-  var favorites = <WordPair>{};
+  var favorites = <WordPair>[];
   var history = <WordPair>[];
 
   void toggleFavorites() {
@@ -43,8 +43,8 @@ class MyAppState extends ChangeNotifier {
   }
 
   void removeFavorite(WordPair word) {
-      favorites.remove(word);
-      notifyListeners();
+    favorites.remove(word);
+    notifyListeners();
   }
 
   void getNext(AnimatedListState? state) {
@@ -67,37 +67,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-    if (kDebugMode) {
-      print("Favorites: ${appState.favorites.length} ❤️❤️❤️");
-    }
-
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage(
-          pair: pair,
-          favorites: appState.favorites.toList(),
-          history: appState.history,
-          getNextWord: (AnimatedListState? state) {
-            appState.getNext(state);
-          },
-          toggleFavorites: () {
-            appState.toggleFavorites();
-          },
-          isFavorite: (WordPair pair) {
-            return appState.favorites.contains(pair);
-          },
-        );
+        page = const GeneratorPage();
         break;
       case 1:
-        page = FavoritesPage(
-          favorites: appState.favorites.toList(),
-          removeFavorite: (WordPair word) {
-            appState.removeFavorite(word);
-          },
-        );
+        page = const FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
