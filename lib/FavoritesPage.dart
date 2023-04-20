@@ -1,8 +1,14 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:namer_app/main.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:namer_app/model/random_word/RandomWord.dart';
+import 'package:namer_app/random_word/bloc.dart';
+import 'package:namer_app/random_word/event.dart';
+import 'package:namer_app/random_word/state.dart';
 
+/// A widget that displays a list of favorite words and allows the user to remove them.
+///
+/// The list of favorite words is obtained from the [RandomWordState.favorites].
+/// The list is displayed using an [AnimatedList].
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
 
@@ -15,26 +21,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RandomWordsProvider>(
-        builder: (context, provider, child) => Column(
+    return BlocBuilder<RandomWordBloc, RandomWordState>(
+        builder: (context, state) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, left: 16.0),
-                  child:
-                      Text("You have ${provider.favorites.length} favorites"),
+                  child: Text("You have ${state.favorites.length} favorites"),
                 ),
                 Expanded(
                   child: AnimatedList(
                     key: _listKey,
-                    initialItemCount: provider.favorites.length,
+                    initialItemCount: state.favorites.length,
                     itemBuilder: (context, index, animation) {
-                      final word = provider.favorites[index];
+                      final word = state.favorites[index];
                       return _buildItem(
                         index,
                         word,
                         animation,
-                        () => _removeItem(index, word, provider.removeFavorite),
+                        () => _removeItem(index, word, context),
                       );
                     },
                   ),
@@ -43,12 +48,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ));
   }
 
-  Widget _buildItem(int index, WordPair word, Animation<double> animation,
+  Widget _buildItem(int index, Word word, Animation<double> animation,
           VoidCallback? onPressed) =>
       SizeTransition(
         sizeFactor: animation,
         child: ListTile(
-          title: Text(word.asLowerCase),
+          title: Text(word.text.asLowerCase),
           trailing: IconButton(
             icon: const Icon(Icons.delete),
             onPressed: onPressed,
@@ -58,10 +63,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   void _removeItem(
     int index,
-    WordPair word,
-    Function(WordPair) removeFavorite,
+    Word word,
+    BuildContext context,
   ) {
-    removeFavorite(word);
+    context.read<RandomWordBloc>().add(RemoveFavorite(word));
     _listKey.currentState?.removeItem(
       index,
       (context, animation) => _buildItem(index, word, animation, null),

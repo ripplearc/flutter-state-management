@@ -1,13 +1,26 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:namer_app/FavoritesPage.dart';
+import 'package:namer_app/random_word/bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'GeneratorPage.dart';
 
 void main() {
   runApp(const MyApp());
+  Bloc.observer = SimpleBlocObserver();
+}
+
+class SimpleBlocObserver extends BlocObserver {
+  @override
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    if (kDebugMode) {
+      print('😀😀😀 ${bloc.runtimeType} $change');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -16,42 +29,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => RandomWordsProvider(),
+    return BlocProvider(
+        create: (_) => RandomWordBloc(),
         child: MaterialApp(
           title: "Namer App",
           theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange)),
-          home: MyHomePage(),
+          home: const MyHomePage(),
         ));
-  }
-}
-
-class RandomWordsProvider extends ChangeNotifier {
-  var current = WordPair.random();
-  var favorites = <WordPair>[];
-  var history = <WordPair>[];
-
-  void toggleFavorites() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    notifyListeners();
-  }
-
-  void removeFavorite(WordPair word) {
-    favorites.remove(word);
-    notifyListeners();
-  }
-
-  void getNext(AnimatedListState? state) {
-    current = WordPair.random();
-    history.insert(0, current);
-    state?.insertItem(0);
-    notifyListeners();
   }
 }
 
