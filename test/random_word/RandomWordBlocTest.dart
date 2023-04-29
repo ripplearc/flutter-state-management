@@ -1,13 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:namer_app/model/Word.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:namer_app/repository/WordRepository.dart';
+
+import '../helper/CircularWords.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
 import 'RandomWordBlocTest.mocks.dart';
 
@@ -90,19 +91,4 @@ void main() {
       ],
     );
   });
-}
-
-/// A helper class to generate a circular list of random words
-class CircularWords {
-  final words = ["test1", "test2", "test3"];
-  int count = 0;
-
-  String next() {
-    if (count == words.length) count = 0;
-    final word = words[count];
-    count++;
-    return word;
-  }
-
-  void reset() => count = 0;
 }
