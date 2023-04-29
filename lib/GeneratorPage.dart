@@ -67,7 +67,9 @@ class _GeneratorPageState extends State<GeneratorPage> {
         return FavoriteButton(
             isFavorite: state.current.isFavorite,
             onPress: () {
-              context.read<RandomWordBloc>().add(ToggleFavorite(state.current));
+              context
+                  .read<RandomWordBloc>()
+                  .add(ToggleFavorite(state.current.text));
             });
       });
 }
@@ -101,7 +103,7 @@ class WordCard extends StatelessWidget {
     required this.pair,
   });
 
-  final WordPair pair;
+  final String pair;
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +115,8 @@ class WordCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
-          pair.asLowerCase,
+          pair,
           style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
         ),
       ),
     );

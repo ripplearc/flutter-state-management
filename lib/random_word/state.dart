@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/random_word/RandomWord.dart';
+import '../model/Word.dart';
 
 /// This abstract class defines the state of a Bloc which generates random words
 /// and stores them in [history]. It provides a list of [favorites] words based on the
@@ -42,6 +42,7 @@ class HistoryUpdated extends RandomWordState {
       : super(history, current);
 
   @override
-  String toString() =>
-      "[$runtimeType] Number of random words generated: ${history.length}";
+  String toString() {
+    return '[Current]: $current \n  [History]: $history';
+  }
 }

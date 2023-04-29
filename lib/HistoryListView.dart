@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namer_app/model/random_word/RandomWord.dart';
+import 'package:namer_app/model/Word.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
@@ -53,12 +53,14 @@ class _HistoryListViewState extends State<HistoryListView> {
               child: Center(
                 child: TextButton.icon(
                   onPressed: () {
-                    context.read<RandomWordBloc>().add(ToggleFavorite(word));
+                    context
+                        .read<RandomWordBloc>()
+                        .add(ToggleFavorite(word.text));
                   },
                   icon: word.isFavorite
                       ? const Icon(Icons.favorite, size: 12)
                       : const SizedBox(),
-                  label: Text(word.text.asLowerCase),
+                  label: Text(word.text),
                 ),
               ),
             );
