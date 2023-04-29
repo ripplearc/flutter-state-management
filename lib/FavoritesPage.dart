@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namer_app/model/random_word/RandomWord.dart';
+import 'package:namer_app/model/Word.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
@@ -53,7 +53,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
       SizeTransition(
         sizeFactor: animation,
         child: ListTile(
-          title: Text(word.text.asLowerCase),
+          title: Text(word.text),
           trailing: IconButton(
             icon: const Icon(Icons.delete),
             onPressed: onPressed,
@@ -66,7 +66,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     Word word,
     BuildContext context,
   ) {
-    context.read<RandomWordBloc>().add(RemoveFavorite(word));
+    context.read<RandomWordBloc>().add(RemoveFavorite(word.text));
     _listKey.currentState?.removeItem(
       index,
       (context, animation) => _buildItem(index, word, animation, null),

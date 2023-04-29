@@ -1,10 +1,9 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:namer_app/FavoritesPage.dart';
 import 'package:namer_app/random_word/bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:namer_app/repository/WordRepository.dart';
 
 import 'GeneratorPage.dart';
 
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => RandomWordBloc(),
+        create: (_) => RandomWordBloc(RandomWordFactoryImpl()),
         child: MaterialApp(
           title: "Namer App",
           theme: ThemeData(
