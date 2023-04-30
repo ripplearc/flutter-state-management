@@ -140,6 +140,7 @@ void main() {
 
       await tester.tap(find.text("Next"));
       await tester.pumpAndSettle();
+      expect(find.text("test2"), findsOneWidget);
 
       // tap the history word
       final historyWord = find.text("test1");
