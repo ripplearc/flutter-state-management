@@ -1,5 +1,5 @@
 // write a widget test for the GenerateScreen widget
-// Path: test/widgets/GeneratorPageTest.dart
+// Path: test/widgets/generator_page_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,9 +9,9 @@ import 'package:namer_app/GeneratorPage.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/repository/WordRepository.dart';
 
-import '../helper/CircularWords.dart';
+import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'GeneratorPageTest.mocks.dart';
+import 'generator_page_test.mocks.dart';
 
 void main() {
   final mockRandomWordFactory = MockRandomWordFactory();
@@ -41,12 +41,13 @@ void main() {
     testWidgets(
         "given first loading the generator page, should display a random word",
         (tester) async {
-      // pump widget from createGeneratePage()
+      // Arrange: Pump the generator page
       await tester.pumpWidget(createGeneratorPage());
+      // Act: Render the page
       await tester.pump();
-      // first random word should be "test1"
+      // Assert: First random word should be "test1"
       expect(find.text("test1"), findsOneWidget);
-      // no history should be displayed
+      // Assert: No history should be displayed
       final animatedListWidget =
           tester.widget<AnimatedList>(find.byType(AnimatedList));
       expect(animatedListWidget.initialItemCount, 0);
@@ -54,13 +55,15 @@ void main() {
     testWidgets(
         "given first loading the generator page, then get a new word, should display a new random word",
         (tester) async {
+      // Arrange: Pump the generator page
       await tester.pumpWidget(createGeneratorPage());
       await tester.pump();
+      // Act: Get a new word
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
-      // second random word should be "test2"
+      // Assert: Second random word should be "test2"
       expect(find.text("test2"), findsOneWidget);
-      // verify one history item is displayed
+      // Assert: Verify displaying one history item
       final parent = find.ancestor(
           of: find.text('test1'), matching: find.byType(AnimatedList));
       expect(parent, findsOneWidget);
@@ -68,6 +71,7 @@ void main() {
     testWidgets(
         "given current word, then favorite the current, should show icon with solid favorite",
         (tester) async {
+          //
       await tester.pumpWidget(createGeneratorPage());
       await tester.pump();
 
@@ -128,7 +132,7 @@ void main() {
       // should remove the favorite icon of the history word
       final parent = find.ancestor(
           of: find.byWidgetPredicate(
-                  (widget) => widget is Icon && widget.icon == Icons.favorite),
+              (widget) => widget is Icon && widget.icon == Icons.favorite),
           matching: find.byType(AnimatedList));
       expect(parent, findsNothing);
     });
@@ -150,7 +154,7 @@ void main() {
       // should add the favorite icon of the history word
       final parent = find.ancestor(
           of: find.byWidgetPredicate(
-                  (widget) => widget is Icon && widget.icon == Icons.favorite),
+              (widget) => widget is Icon && widget.icon == Icons.favorite),
           matching: find.byType(AnimatedList));
       expect(parent, findsOneWidget);
     });

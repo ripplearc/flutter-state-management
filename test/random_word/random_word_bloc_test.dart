@@ -8,9 +8,9 @@ import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
 import 'package:namer_app/repository/WordRepository.dart';
 
-import '../helper/CircularWords.dart';
+import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'RandomWordBlocTest.mocks.dart';
+import 'random_word_bloc_test.mocks.dart';
 
 void main() {
   final mockRandomWordFactory = MockRandomWordFactory();

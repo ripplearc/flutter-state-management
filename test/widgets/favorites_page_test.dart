@@ -8,9 +8,9 @@ import 'package:namer_app/random_word/bloc.dart';
 import 'package:mockito/annotations.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/repository/WordRepository.dart';
-import '../helper/CircularWords.dart';
+import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'FavoritesPageTest.mocks.dart';
+import 'favorites_page_test.mocks.dart';
 
 // create  a BlocObserver to override onChange
 class TestBlocObserver extends BlocObserver {
