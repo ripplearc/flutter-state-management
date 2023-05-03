@@ -10,42 +10,44 @@ import 'package:namer_app/random_word/state.dart';
 /// The list of favorite words is obtained from the [RandomWordState.favorites].
 /// The list is displayed using an [AnimatedList].
 class FavoritesPage extends StatefulWidget {
-  const FavoritesPage({super.key});
+  const FavoritesPage({super.key, required this.listKey});
+
+  final GlobalKey<AnimatedListState> listKey;
 
   @override
   State<FavoritesPage> createState() => _FavoritesPageState();
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  final _listKey = GlobalKey<AnimatedListState>();
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RandomWordBloc, RandomWordState>(
-        builder: (context, state) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 16.0),
-                  child: Text("You have ${state.favorites.length} favorites"),
-                ),
-                Expanded(
-                  child: AnimatedList(
-                    key: _listKey,
-                    initialItemCount: state.favorites.length,
-                    itemBuilder: (context, index, animation) {
-                      final word = state.favorites[index];
-                      return _buildItem(
-                        index,
-                        word,
-                        animation,
-                        () => _removeItem(index, word, context),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ));
+        builder: (context, state) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, left: 16.0),
+            child: Text("You have ${state.favorites.length} favorites"),
+          ),
+          Expanded(
+            child: AnimatedList(
+              key: widget.listKey,
+              initialItemCount: state.favorites.length,
+              itemBuilder: (context, index, animation) {
+                final word = state.favorites[index];
+                return _buildItem(
+                  index,
+                  word,
+                  animation,
+                  () => _removeItem(index, word, context),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildItem(int index, Word word, Animation<double> animation,
@@ -67,7 +69,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     BuildContext context,
   ) {
     context.read<RandomWordBloc>().add(RemoveFavorite(word.text));
-    _listKey.currentState?.removeItem(
+    widget.listKey.currentState?.removeItem(
       index,
       (context, animation) => _buildItem(index, word, animation, null),
       duration: const Duration(milliseconds: 200),

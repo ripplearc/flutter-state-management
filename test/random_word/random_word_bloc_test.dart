@@ -1,15 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:namer_app/model/Word.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:namer_app/repository/WordRepository.dart';
+
+import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'RandomWordBlocTest.mocks.dart';
+import 'random_word_bloc_test.mocks.dart';
 
 void main() {
   final mockRandomWordFactory = MockRandomWordFactory();
@@ -21,7 +22,9 @@ void main() {
     test(
         'given the initial state, should emit with a random word and empty history',
         () {
+      // Arrange: Create the bloc
       randomWords.reset();
+      // Assert: Get the initial state
       expect(RandomWordBloc(mockRandomWordFactory).state,
           const HistoryUpdated([], Word(text: "test1", isFavorite: false)));
     });
@@ -90,19 +93,4 @@ void main() {
       ],
     );
   });
-}
-
-/// A helper class to generate a circular list of random words
-class CircularWords {
-  final words = ["test1", "test2", "test3"];
-  int count = 0;
-
-  String next() {
-    if (count == words.length) count = 0;
-    final word = words[count];
-    count++;
-    return word;
-  }
-
-  void reset() => count = 0;
 }

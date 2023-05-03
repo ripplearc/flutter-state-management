@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = const GeneratorPage();
         break;
       case 1:
-        page = const FavoritesPage();
+        GlobalKey<AnimatedListState> animatedListKey = GlobalKey();
+        page = FavoritesPage(listKey: animatedListKey);
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');

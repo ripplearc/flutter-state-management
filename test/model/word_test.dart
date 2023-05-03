@@ -11,5 +11,16 @@ void main() {
       expect(const Word(text: "test1", isFavorite: false),
           isNot(const Word(text: "test1", isFavorite: true)));
     });
+    // test copywith
+    test('WordTest supports copyWith', () {
+      expect(
+          const Word(text: "test1", isFavorite: false)
+              .copyWith(isFavorite: true),
+          const Word(text: "test1", isFavorite: true));
+      expect(
+          const Word(text: "test1", isFavorite: false)
+              .copyWith(text: "test2"),
+          const Word(text: "test2", isFavorite: false));
+    });
   });
 }
