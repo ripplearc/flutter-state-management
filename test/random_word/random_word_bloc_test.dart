@@ -22,7 +22,9 @@ void main() {
     test(
         'given the initial state, should emit with a random word and empty history',
         () {
+      // Arrange: Create the bloc
       randomWords.reset();
+      // Assert: Get the initial state
       expect(RandomWordBloc(mockRandomWordFactory).state,
           const HistoryUpdated([], Word(text: "test1", isFavorite: false)));
     });

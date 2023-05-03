@@ -54,25 +54,29 @@ void main() {
         ));
   }
 
-  // create group
   group("FavoritePage", () {
     testWidgets(
-        "given first loading the favorite page, should display no favorite",
+        "given first loading the favorite page, should display no favorites",
         (tester) async {
+      // Arrange: Pump the favorite page
       final bloc = RandomWordBloc(mockRandomWordFactory);
       final animatedListKey = GlobalKey<AnimatedListState>();
       await tester.pumpWidget(createFavoritePage(bloc, animatedListKey));
+      // Act: Render the page
       await tester.pump();
+      // Assert: No favorite should be displayed
       expect(find.text("You have 0 favorites"), findsOneWidget);
     });
     testWidgets(
-        "given first loading the favorite page, then add a word to favorite, should display the word in favorite",
+        "given loading the favorite page, then add a word to favorite, should display the word in favorite",
         (tester) async {
+      // Arrange: Pump the favorite page
       final bloc = RandomWordBloc(mockRandomWordFactory);
       final animatedListKey = GlobalKey<AnimatedListState>();
 
       await tester.pumpWidget(createFavoritePage(bloc, animatedListKey));
       await tester.pumpAndSettle();
+      // Act: Toggle the favorite of a word, get a new word, then toggle the favorite of the new word
       bloc.add(ToggleFavorite("test1"));
       animatedListKey.currentState?.insertItem(0);
       await tester.pumpAndSettle();
@@ -80,6 +84,7 @@ void main() {
       bloc.add(ToggleFavorite("test2"));
       animatedListKey.currentState?.insertItem(0);
       await tester.pumpAndSettle();
+      // Assert: Display two words in favorite list
       expect(find.text("You have 2 favorites"), findsOneWidget);
       final animatedListWidget =
           tester.widget<AnimatedList>(find.byType(AnimatedList));
@@ -92,11 +97,14 @@ void main() {
     testWidgets(
         "given 2 favorite words, then remove one of them, should have one favorite word left",
         (tester) async {
+      // Arrange: Pump the favorite page
       final bloc = RandomWordBloc(mockRandomWordFactory);
       final animatedListKey = GlobalKey<AnimatedListState>();
 
       await tester.pumpWidget(createFavoritePage(bloc, animatedListKey));
       await tester.pumpAndSettle();
+
+      // Act: Add two favorite words, then remove one of them
       bloc.add(GetNewWord());
       bloc.add(ToggleFavorite("test1"));
       animatedListKey.currentState?.insertItem(0);
@@ -106,17 +114,17 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text("You have 2 favorites"), findsOneWidget);
 
-      // remove test1
-      bloc.add(ToggleFavorite("test1"));
-      animatedListKey.currentState?.removeItem(
-          1, (context, animation) => Container(),
-          duration: Duration.zero);
+      final wordTile = find.widgetWithText(ListTile, 'test1');
+      final deleteButtonFinder =
+          find.descendant(of: wordTile, matching: find.byIcon(Icons.delete));
+      await tester.tap(deleteButtonFinder);
       await tester.pumpAndSettle();
 
+      // Assert: Display one word in favorite list
       expect(find.text("You have 1 favorites"), findsOneWidget);
-      final listTileFinder = find.descendant(
+      final listTileFinder2 = find.descendant(
           of: find.byType(AnimatedList), matching: find.byType(ListTile));
-      expect(listTileFinder, findsOneWidget);
+      expect(listTileFinder2, findsOneWidget);
     });
   });
 }
