@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:namer_app/model/Word.dart';
+import 'package:namer_app/model/word.dart';
 
 void main() {
   group('WordTest', () {

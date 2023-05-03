@@ -1,7 +1,6 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namer_app/HistoryListView.dart';
+import 'package:namer_app/history_listview.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/random_word/state.dart';
