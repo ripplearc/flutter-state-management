@@ -17,6 +17,13 @@ The [BloC](https://pub.dev/packages/flutter_bloc) (Business Logic Component) app
 
 ## Unit Tests
 We use [bloc_test](https://pub.dev/packages/bloc_test) to write unit tests for `BloC`. 
+
+Since we uses [mockito](https://pub.dev/packages/mockito), generate the mock files before running the tests:
+
+```
+flutter pub run build_runner build
+```
+
 To run test coverage, try the following:
 
 ```
@@ -25,4 +32,7 @@ flutter test --coverage; genhtml coverage/lcov.info -o coverage/html; open cover
 
 ## Widget and Integration Tests
 Widget and Integration tests are another essential part of app development. In this project, we show how to write Widget and Integration tests for the `BloC` approach.
+
+## Flutter Environment
+Flutter 3.7.9 • channel stable
 
