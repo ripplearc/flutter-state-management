@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/Word.dart';
-
 abstract class RandomWordEvent extends Equatable {}
 
 /// Create a new random word.

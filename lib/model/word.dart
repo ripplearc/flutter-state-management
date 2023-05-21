@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:equatable/equatable.dart';
 
 class Word extends Equatable {

@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:namer_app/GeneratorPage.dart';
+import 'package:namer_app/generator_page.dart';
 import 'package:namer_app/random_word/bloc.dart';
-import 'package:namer_app/repository/WordRepository.dart';
+import 'package:namer_app/repository/word_repository.dart';
 
 import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])

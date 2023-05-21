@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/Word.dart';
+import '../model/word.dart';
 
 /// This abstract class defines the state of a Bloc which generates random words
 /// and stores them in [history]. It provides a list of [favorites] words based on the

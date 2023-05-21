@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../model/Word.dart';
-import '../repository/WordRepository.dart';
+import '../model/word.dart';
+import '../repository/word_repository.dart';
 import 'event.dart';
 import 'state.dart';
 

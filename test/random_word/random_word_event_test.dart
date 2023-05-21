@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:namer_app/model/Word.dart';
+import 'package:namer_app/model/word.dart';
 import 'package:namer_app/random_word/event.dart';
-import 'package:namer_app/repository/WordRepository.dart';
+import 'package:namer_app/repository/word_repository.dart';
 
 void main() {
   group("RandomWordEvent", () {

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:namer_app/FavoritesPage.dart';
+import 'package:namer_app/favorites_page.dart';
 import 'package:namer_app/random_word/bloc.dart';
-import 'package:namer_app/repository/WordRepository.dart';
+import 'package:namer_app/repository/word_repository.dart';
 
-import 'GeneratorPage.dart';
+import 'generator_page.dart';
 
 void main() {
   runApp(const MyApp());
