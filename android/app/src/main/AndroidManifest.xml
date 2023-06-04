@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ripplearc.random_words">
+    package="com.ripplearc.composerandomwords">
    <application
         android:label="random_words"
         android:name="${applicationName}"

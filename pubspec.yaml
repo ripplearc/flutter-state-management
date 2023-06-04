@@ -3,7 +3,22 @@ description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.1+1
+# When you rebuild the app for Android,
+# any updates in the version number from the pubspec file will update
+# the versionName and versionCode in the local.properties file.
+#
+# The version number is three numbers separated by dots,
+# such as 1.0.0 in the example above, followed by an optional build number
+# such as 1 in the example above, separated by a +.
+#
+# Both the version and the build number can be overridden in Flutter’s build by
+# specifying --build-name and --build-number, respectively.
+#
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# For more information, check out Version your app in the Android documentation.
+# Override: BUILD_NUMBER=[#] bundle exec fastlane android deploy
+# https://blog.codemagic.io/ci-cd-for-flutter-with-fastlane-codemagic/#first-upload
+version: 0.0.1+2
 
 environment:
   sdk: '>=2.19.4 <4.0.0'

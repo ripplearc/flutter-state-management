@@ -115,7 +115,7 @@ platform :android do
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      package_name: 'com.itcraftship.truth_or_dare'
+      package_name: 'com.ripplearc.composerandomwords'
     )
   end
 end
