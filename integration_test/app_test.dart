@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,7 +6,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:namer_app/generator_page.dart';
 
-import 'package:namer_app/main.dart' as app;
 import 'package:namer_app/main.dart';
 import 'package:namer_app/random_word/bloc.dart';
 import 'package:namer_app/repository/word_repository.dart';

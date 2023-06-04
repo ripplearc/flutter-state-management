@@ -1,0 +1,4 @@
+app_identifier("com.ripplearc.composerandomwords") # The bundle identifier of your app
+apple_id(ENV['TOD_APPLE_ID'].to_s) # Your Apple email address
+
+team_id("K2CZ7Y95MG")  # Developer Portal Team ID
