@@ -69,6 +69,8 @@ unlinked_spec.ds
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
 *.jks
+# Google Service Account to upload builds
+google_play.json
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -99,6 +101,8 @@ unlinked_spec.ds
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+Runner.app.dSYM.zip
+Runner.ipa
 
 # macOS
 **/Flutter/ephemeral/
@@ -122,6 +126,10 @@ coverage/
 
 # Symbols
 app.*.symbols
+
+# fastlane
+fastlane/report.xml
+fastlane/README.md
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3

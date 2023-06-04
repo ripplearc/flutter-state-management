@@ -1,4 +1,4 @@
-package com.ripplearc.random_words
+package com.ripplearc.composerandomwords
 
 import io.flutter.embedding.android.FlutterActivity
 
