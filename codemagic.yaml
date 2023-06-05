@@ -26,7 +26,7 @@ workflows:
       - bundle exec fastlane setup_keychain
       - |
         # set up release keystore & key.properties
-        echo $ANDROID_KEYSTORE | base64 --decode > "$FCI_BUILD_DIR/android/app/itc-release.keystore"
+        echo $ANDROID_KEYSTORE | base64 --decode > "$FCI_BUILD_DIR/android/app/randomword-release.keystore"
         echo $ANDROID_KEY_PROPERTIES | base64 --decode > "$FCI_BUILD_DIR/android/key.properties"
       - |
         # set up local properties
