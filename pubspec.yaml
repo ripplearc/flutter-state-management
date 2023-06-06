@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # For more information, check out Version your app in the Android documentation.
 # Override: BUILD_NUMBER=[#] bundle exec fastlane android deploy
 # https://blog.codemagic.io/ci-cd-for-flutter-with-fastlane-codemagic/#first-upload
-version: 0.0.1+2
+version: 0.0.2+3
 
 environment:
   sdk: '>=2.19.4 <4.0.0'
