@@ -1,4 +1,38 @@
 workflows:
+  publish-ios-qa:
+    name: Publish iOS QA
+    max_build_duration: 60
+    environment:
+      groups:
+        - app_store
+        - match
+      flutter: 3.7.12
+      xcode: 14.3
+      cocoapods: default
+    cache:
+      cache_paths: [ ]
+    triggering:
+      events:
+        # publish only tagged commits to main:
+        - tag
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: false
+    scripts:
+      - bundle install
+      - bundle exec fastlane setup_keychain
+      - find . -name "Podfile" -execdir pod install \;
+      - sh ci/build_ios_qa.sh
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - ./*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - ripplearc@gmail.com
   publish-qa:
     name: Publish QA
     max_build_duration: 60
@@ -11,7 +45,7 @@ workflows:
       xcode: 14.3
       cocoapods: default
     cache:
-      cache_paths: []
+      cache_paths: [ ]
     triggering:
       events:
         # publish only tagged commits to main:
@@ -54,7 +88,7 @@ workflows:
       xcode: 14.3
       cocoapods: default
     cache:
-      cache_paths: []
+      cache_paths: [ ]
     triggering:
       events:
         # test each PR to main:
