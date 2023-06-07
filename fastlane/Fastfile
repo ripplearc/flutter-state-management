@@ -77,9 +77,7 @@ fastlane renew_profile
       sh("flutter", "build", "ios", "--release", "--no-codesign")
     end
 
-    # first remove old and expired provisioning profiles (workaround: https://github.com/fastlane/fastlane/issues/3738)
-    remove_old_profiles
-    match(app_identifier: 'com.ripplearc.composerandomwords', type: 'appstore', keychain_password: 'secretPass', readonly: RUNNING_ON_CI)
+    refresh_appstore_profiles
 
     build_app(
       scheme: "Runner",
