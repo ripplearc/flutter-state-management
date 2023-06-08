@@ -77,7 +77,7 @@ fastlane renew_profile
       sh("flutter", "build", "ios", "--release", "--no-codesign")
     end
 
-    refresh_appstore_profiles
+    match(app_identifier: 'com.ripplearc.composerandomwords', type: 'appstore', keychain_password: 'secretPass', readonly: RUNNING_ON_CI)
 
     build_app(
       scheme: "Runner",
