@@ -20,14 +20,6 @@ workflows:
           include: true
           source: false
     scripts:
-      - name: Set the build version
-        script: |
-          #!/bin/sh
-          set -e
-          set -x
-          cd $CM_BUILD_DIR/ios
-          agvtool new-version -all $(($BUILD_NUMBER + 1))
-          cd $CM_BUILD_DIR
       - name: Build iOS app
         script: |
           bundle install
@@ -48,6 +40,7 @@ workflows:
     max_build_duration: 60
     environment:
       groups:
+        - match
         - app_store
         - google_play
         - keystore_credentials
