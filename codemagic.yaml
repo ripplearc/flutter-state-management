@@ -20,10 +20,20 @@ workflows:
           include: true
           source: false
     scripts:
-      - bundle install
-      - bundle exec fastlane setup_keychain
-      - find . -name "Podfile" -execdir pod install \;
-      - sh ci/build_ios_qa.sh
+      - name: Set the build version
+        script: |
+          #!/bin/sh
+          set -e
+          set -x
+          cd $CM_BUILD_DIR/ios
+          agvtool new-version -all $(($BUILD_NUMBER + 1))
+          cd $CM_BUILD_DIR
+      - name: Build iOS app
+        script: |
+          bundle install
+          bundle exec fastlane setup_keychain
+          find . -name "Podfile" -execdir pod install \;
+          sh ci/build_ios_qa.sh
     artifacts:
       - build/ios/ipa/*.ipa
       - ./*.ipa

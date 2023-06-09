@@ -1,3 +1,5 @@
+# Tutorial: CI/CD for Flutter is a piece of cake with fastlane and Codemagic
+# https://blog.codemagic.io/ci-cd-for-flutter-with-fastlane-codemagic/
 default_platform(:ios)
 
 RUNNING_ON_CI = ENV['CI'].to_s.downcase == 'true'
