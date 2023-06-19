@@ -74,8 +74,8 @@ fastlane renew_profile
 
   desc 'Builds an appstore version of the application and distributes to AppStore Connect'
   lane :deploy do
-    BUILD_NUMBER = ENV['BUILD_NUMBER'].to_s
     common_build_actions()
+    BUILD_NUMBER = ENV['BUILD_NUMBER'].to_s
     Dir.chdir ".." do
       sh("flutter", "build", "ios", "--release", "--no-codesign", "--build-number=#{BUILD_NUMBER}")
     end

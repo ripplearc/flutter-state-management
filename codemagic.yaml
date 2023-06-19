@@ -5,6 +5,7 @@ workflows:
     environment:
       groups:
         - app_store
+        - app_store_credentials
         - match
       flutter: 3.7.12
       xcode: 14.3
@@ -20,6 +21,33 @@ workflows:
           include: true
           source: false
     scripts:
+      #      - name: Get the latest build number
+      #        script: |
+      #          # Get the latest testflight build number
+      #          LATEST_TESTFLIGHT_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_APPLE_ID")
+      #          # avgtool must run in the folder where xcodeproj file is located
+      #          cd ./ios
+      #          # Increment the latest testflight build number by 1
+      #          NEW_BUILD_NUMBER=$((LATEST_TESTFLIGHT_BUILD_NUMBER + 1))
+      #          # Update the build number using agvtool
+      #          agvtool new-version -all $NEW_BUILD_NUMBER
+      #          cd $CM_BUILD_DIR
+
+      #          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_APPLE_ID")
+      #          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$TOD_APPLE_ID") + 1))
+      - name: Get the latest build number
+        script: |
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number $APP_APPLE_ID)
+          cd ./ios # avgtool must run in the folder where xcodeproj file is located, to edit the xcconfig file
+          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1)) 
+          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number $APP_APPLE_ID) + 1))
+          cd $CM_BUILD_DIR
+        ignore_failure: false
+      - name: Set up app/build.gradle
+        script: |
+          #!/bin/sh
+          set -ex
+          printenv
       - name: Build iOS app
         script: |
           bundle install
@@ -42,6 +70,7 @@ workflows:
       groups:
         - match
         - app_store
+        - app_store_credentials
         - google_play
         - keystore_credentials
       flutter: 3.7.12
