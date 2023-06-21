@@ -75,9 +75,8 @@ fastlane renew_profile
   desc 'Builds an appstore version of the application and distributes to AppStore Connect'
   lane :deploy do
     common_build_actions()
-    BUILD_NUMBER = ENV['BUILD_NUMBER'].to_s
     Dir.chdir ".." do
-      sh("flutter", "build", "ios", "--release", "--no-codesign", "--build-number=#{BUILD_NUMBER}")
+      sh("flutter", "build", "ios", "--release", "--no-codesign")
     end
 
     match(app_identifier: 'com.ripplearc.composerandomwords', type: 'appstore', keychain_password: 'secretPass', readonly: RUNNING_ON_CI)
