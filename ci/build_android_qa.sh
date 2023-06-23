@@ -6,4 +6,5 @@
 # If you use a specific number locally, a build with the same number will fail on Codemagic.
 # For BUILD_NUMBER (VersionCode) see
 # https://docs.flutter.dev/deployment/android#updating-the-apps-version-number
-bundle exec fastlane android deploy
+build_number="$1"  # Store the value of the first command-line argument
+bundle exec fastlane android deploy build_number:13 build_number:"$build_number"

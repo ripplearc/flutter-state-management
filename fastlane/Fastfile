@@ -98,13 +98,19 @@ fastlane renew_profile
   end
 end
 
+
 platform :android do
   desc 'Builds and signs a production release to distribute in Google Play Store'
-  lane :deploy do
-    BUILD_NUMBER = ENV['BUILD_NUMBER'].to_s
+# pass in parameter of build_number here
+  lane :deploy do |options|
+    build_number = options[:build_number] || ENV['BUILD_NUMBER'].to_s
     common_build_actions()
     Dir.chdir ".." do
-      sh("flutter", "build", "appbundle", "--build-number=#{BUILD_NUMBER}")
+#       sh("LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'com.ripplearc.composerandomwords' --verbose) \
+#           && INCREMENT_GOOGLE_PLAY_BUILD_NUMBER=$((LATEST_GOOGLE_PLAY_BUILD_NUMBER+1)) \
+#           && echo INCREMENT_GOOGLE_PLAY_BUILD_NUMBER: $INCREMENT_GOOGLE_PLAY_BUILD_NUMBER \
+#           && flutter build appbundle --build-number=$INCREMENT_GOOGLE_PLAY_BUILD_NUMBER")
+      sh("flutter build appbundle --build-number=#{build_number}")
     end
 
     supply(
