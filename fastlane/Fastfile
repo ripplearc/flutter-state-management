@@ -98,13 +98,14 @@ fastlane renew_profile
   end
 end
 
+
 platform :android do
   desc 'Builds and signs a production release to distribute in Google Play Store'
-  lane :deploy do
-    BUILD_NUMBER = ENV['BUILD_NUMBER'].to_s
+  lane :deploy do |options|
+    build_number = options[:build_number] || ENV['BUILD_NUMBER'].to_s
     common_build_actions()
     Dir.chdir ".." do
-      sh("flutter", "build", "appbundle", "--build-number=#{BUILD_NUMBER}")
+      sh("flutter build appbundle --build-number=#{build_number}")
     end
 
     supply(

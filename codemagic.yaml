@@ -34,12 +34,8 @@ workflows:
           set -ex
           printenv
         ignore_failure: false
-      - name: Print the environmental variables
-        script: |
-          #!/bin/sh
-          set -ex
-          printenv
-      - name: Build iOS app
+      - &build_ios_app
+        name: Build iOS app
         script: |
           bundle install
           bundle exec fastlane setup_keychain
@@ -48,6 +44,49 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - ./*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - ripplearc@gmail.com
+  publish-qa-android:
+    name: Publish Android QA
+    max_build_duration: 60
+    environment:
+      groups:
+        - google_play
+        - keystore_credentials
+      flutter: 3.7.12
+    cache:
+      cache_paths: [ ]
+    triggering:
+      events:
+        # publish only tagged commits to main:
+        - tag
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: false
+    scripts:
+      - &set_up_key_store_and_properties
+        name: Set up release keystore, key.properties, local.properties
+        script: |
+          echo $GOOGLE_PLAY_JSON | base64 --decode > google_play.json
+          echo $ANDROID_KEYSTORE | base64 --decode > "$FCI_BUILD_DIR/android/app/randomword-release.keystore"
+          echo $ANDROID_KEY_PROPERTIES | base64 --decode > "$FCI_BUILD_DIR/android/key.properties"
+          echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+      - &increment_google_play_build_number_and_build_android_app
+        name: Build the release app with the latest build number from Google Play
+        script: |
+          LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'com.ripplearc.composerandomwords' --verbose)
+          echo INCREMENT_GOOGLE_PLAY_BUILD_NUMBER: $INCREMENT_GOOGLE_PLAY_BUILD_NUMBER
+          bundle install
+          bundle exec fastlane android deploy build_number:$((LATEST_GOOGLE_PLAY_BUILD_NUMBER+1))
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
@@ -78,20 +117,10 @@ workflows:
           include: true
           source: false
     scripts:
+      - *set_up_key_store_and_properties
+      - *increment_google_play_build_number_and_build_android_app
       - *increment_testflight_build_number
-      - echo $GOOGLE_PLAY_JSON | base64 --decode > google_play.json
-      - bundle install
-      - bundle exec fastlane setup_keychain
-      - |
-        # set up release keystore & key.properties
-        echo $ANDROID_KEYSTORE | base64 --decode > "$FCI_BUILD_DIR/android/app/randomword-release.keystore"
-        echo $ANDROID_KEY_PROPERTIES | base64 --decode > "$FCI_BUILD_DIR/android/key.properties"
-      - |
-        # set up local properties
-        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-      - sh ci/build_android_qa.sh
-      - find . -name "Podfile" -execdir pod install \;
-      - sh ci/build_ios_qa.sh
+      - *build_ios_app
     artifacts:
       - build/**/outputs/**/*.apk
       - build/**/outputs/**/*.aab
