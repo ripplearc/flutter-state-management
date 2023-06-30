@@ -58,8 +58,6 @@ workflows:
         - google_play
         - keystore_credentials
       flutter: 3.7.12
-      xcode: 14.3
-      cocoapods: default
     cache:
       cache_paths: [ ]
     triggering:
