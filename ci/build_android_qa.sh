@@ -7,4 +7,4 @@
 # For BUILD_NUMBER (VersionCode) see
 # https://docs.flutter.dev/deployment/android#updating-the-apps-version-number
 build_number="$1"  # Store the value of the first command-line argument
-bundle exec fastlane android deploy build_number:13 build_number:"$build_number"
+bundle exec fastlane android deploy build_number:"$build_number"
