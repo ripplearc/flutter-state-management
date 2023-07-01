@@ -16,6 +16,14 @@ def common_build_actions()
   end
 end
 
+lane :run_unit_widget_tests do
+  # Execute Flutter unit tests
+  common_build_actions()
+  Dir.chdir ".." do
+    sh("flutter test --machine > test-results/unit_tests.json")
+  end
+end
+
 platform :ios do
   lane :setup_keychain do
     create_keychain(

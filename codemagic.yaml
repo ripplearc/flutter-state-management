@@ -151,11 +151,18 @@ workflows:
           include: true
           source: false
     scripts:
-      - bundle install
       - |
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-      - bundle exec fastlane test
+### How to trigger the UI tests
+### How to run code coverage?
+      - &run_unit_tests
+        name: Run unit and widget tests
+        script: |
+          mkdir -p test-results
+          bundle install
+          bundle exec fastlane run_unit_widget_tests
+        test_report: test-results/unit_tests.json
     publishing:
       email:
         recipients:
