@@ -16,11 +16,24 @@ def common_build_actions()
   end
 end
 
-lane :run_unit_widget_tests do
+lane :run_unit_widget_tests do |options|
+  test_report_path = options[:test_report_path]
   # Execute Flutter unit tests
   common_build_actions()
   Dir.chdir ".." do
-    sh("flutter test --machine > test-results/unit_tests.json")
+    sh("flutter test --machine > #{test_report_path}")
+  end
+end
+
+lane :run_ios_integration_tests do |options|
+  test_report_path = options[:test_report_path]
+  # Execute Flutter integration tests
+  common_build_actions()
+  Dir.chdir ".." do
+    sh("xcrun simctl shutdown all \
+        && TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-16-4) \
+        && xcrun simctl boot $TEST_DEVICE \
+        && flutter -d $TEST_DEVICE test integration_test --machine > #{test_report_path}")
   end
 end
 

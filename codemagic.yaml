@@ -133,8 +133,8 @@ workflows:
       email:
         recipients:
           - ripplearc@gmail.com
-  pr:
-    name: PR Tests
+  unit-and-widget-tests:
+    name: Unit & Widget Tests
     max_build_duration: 60
     environment:
       flutter: 3.7.12
@@ -154,15 +154,44 @@ workflows:
       - |
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-### How to trigger the UI tests
-### How to run code coverage?
+      ### How to trigger the UI tests
+      ### How to run code coverage?
       - &run_unit_tests
         name: Run unit and widget tests
         script: |
           mkdir -p test-results
           bundle install
-          bundle exec fastlane run_unit_widget_tests
+          bundle exec fastlane run_unit_widget_tests test_report_path:test-results/unit_tests.json
         test_report: test-results/unit_tests.json
+    publishing:
+      email:
+        recipients:
+          - ripplearc@gmail.com
+  integration-tests:
+    name: iOS and Web Integration Tests
+    max_build_duration: 60
+    environment:
+      flutter: 3.7.12
+      xcode: 14.3
+      cocoapods: default
+    cache:
+      cache_paths: [ ]
+    triggering:
+      events:
+        # test each PR to main:
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: false
+    scripts:
+      - &run_ios_integration_tests
+        name: Flutter integration tests (iOS)
+        script: |
+          mkdir -p test-results
+          bundle install
+          bundle exec fastlane run_ios_integration_tests test_report_path:test-results/integration_tests.json
+        test_report: test-results/integration_tests.json
     publishing:
       email:
         recipients:
