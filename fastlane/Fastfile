@@ -27,13 +27,29 @@ end
 
 lane :run_ios_integration_tests do |options|
   test_report_path = options[:test_report_path]
-  # Execute Flutter integration tests
+  # Execute ios integration tests
   common_build_actions()
   Dir.chdir ".." do
     sh("xcrun simctl shutdown all \
         && TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-16-4) \
         && xcrun simctl boot $TEST_DEVICE \
-        && flutter -d $TEST_DEVICE test integration_test --machine > #{test_report_path}")
+        && flutter -d $TEST_DEVICE test integration_test \
+        --machine > #{test_report_path}")
+  end
+end
+
+lane :run_web_chrome_integration_tests do
+  # Execute Chrome integration tests
+  common_build_actions()
+  Dir.chdir ".." do
+    sh("brew upgrade --cask chromedriver \
+        && chromedriver --version")
+    Process.spawn("chromedriver --port=4444 &")
+    sh("flutter config --enable-web \
+        && flutter drive \
+           --driver=test_driver/integration_driver.dart \
+           --target=integration_test/app_test.dart \
+           -d web-server --release --browser-name chrome")
   end
 end
 
