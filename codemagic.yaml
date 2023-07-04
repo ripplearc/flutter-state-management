@@ -154,8 +154,6 @@ workflows:
       - |
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
-      ### How to trigger the UI tests
-      ### How to run code coverage?
       - &run_unit_tests
         name: Run unit and widget tests
         script: |
@@ -168,6 +166,12 @@ workflows:
         recipients:
           - ripplearc@gmail.com
   integration-tests:
+    ### How to trigger the UI tests
+    ### How to run code coverage?
+    ### Combine iOS and Web tests into one workflow because the Preparing build machine
+    ### takes close to 1 minute while the test execution takes 2 minutes or less.artifacts:
+    ### When the tests execution outweighs the build preparation time, it makes sense to split them.
+    ### By splitting them, we can rerun them individually in the case of flaky tests.
     name: iOS and Web Integration Tests
     max_build_duration: 60
     environment:
@@ -192,6 +196,12 @@ workflows:
           bundle install
           bundle exec fastlane run_ios_integration_tests test_report_path:test-results/integration_tests.json
         test_report: test-results/integration_tests.json
+      - &run_web_chrome_integration_tests
+        name: Flutter integration tests (Chrome)
+        script: |
+          mkdir -p test-results
+          bundle install
+          bundle exec fastlane run_web_chrome_integration_tests
     publishing:
       email:
         recipients:
