@@ -19,10 +19,7 @@ end
 def close_driver_port(port)
   command = <<~BASH
     if nc -z localhost #{port}; then
-      pid=$(lsof -i :#{port} -t)
-      if [[ -n "$pid" ]]; then
-        kill "$pid" -9
-      fi
+       sudo kill -9 $(lsof -t -i :#{port})
     fi
   BASH
 
@@ -51,23 +48,25 @@ lane :run_ios_integration_tests do |options|
   end
 end
 
-lane :run_web_chrome_integration_tests do
+lane :run_web_chrome_integration_tests do |options|
+  port_number = options[:port]
   # Execute Chrome integration tests
   common_build_actions()
+  close_driver_port(port_number)
   Dir.chdir ".." do
     sh("brew upgrade --cask chromedriver \
         && chromedriver --version")
-    Process.spawn("chromedriver --port=4444 &")
+    Process.spawn("chromedriver --port=#{port_number} &")
     sh("flutter config --enable-web \
         && flutter drive \
            --driver=test_driver/integration_driver.dart \
            --target=integration_test/app_test.dart \
-           -d web-server --release --browser-name chrome")
+           -d web-server --driver-port=#{port_number} --release --browser-name chrome")
   end
 end
 
-lane :run_web_safari_integration_tests do
-  port_number = 4444
+lane :run_web_safari_integration_tests do |options|
+  port_number = options[:port]
   # Execute Chrome integration tests
   common_build_actions()
   close_driver_port(port_number)
@@ -78,7 +77,7 @@ lane :run_web_safari_integration_tests do
         && flutter drive \
            --driver=test_driver/integration_driver.dart \
            --target=integration_test/app_test.dart \
-           -d web-server --release --browser-name safari")
+           -d web-server --driver-port=#{port_number} --release --browser-name safari")
   end
 end
 

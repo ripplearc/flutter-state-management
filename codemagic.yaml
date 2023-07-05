@@ -200,12 +200,12 @@ workflows:
         name: Flutter integration tests (Chrome)
         script: |
           bundle install
-          bundle exec fastlane run_web_chrome_integration_tests
+          bundle exec fastlane run_web_chrome_integration_tests port:4444
       - &run_web_safari_integration_tests
         name: Flutter integration tests (Safari)
         script: |
           bundle install
-          bundle exec fastlane run_web_safari_integration_tests
+          bundle exec fastlane run_web_safari_integration_tests port:5555
     publishing:
       email:
         recipients:
