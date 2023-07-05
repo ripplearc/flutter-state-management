@@ -16,6 +16,19 @@ def common_build_actions()
   end
 end
 
+def close_driver_port(port)
+  command = <<~BASH
+    if nc -z localhost #{port}; then
+      pid=$(lsof -i :#{port} -t)
+      if [[ -n "$pid" ]]; then
+        kill "$pid" -9
+      fi
+    fi
+  BASH
+
+  sh(command, print_command: false)
+end
+
 lane :run_unit_widget_tests do |options|
   test_report_path = options[:test_report_path]
   # Execute Flutter unit tests
@@ -50,6 +63,22 @@ lane :run_web_chrome_integration_tests do
            --driver=test_driver/integration_driver.dart \
            --target=integration_test/app_test.dart \
            -d web-server --release --browser-name chrome")
+  end
+end
+
+lane :run_web_safari_integration_tests do
+  port_number = 4444
+  # Execute Chrome integration tests
+  common_build_actions()
+  close_driver_port(port_number)
+  Dir.chdir ".." do
+    sh("sudo safaridriver --enable")
+    Process.spawn("safaridriver --port #{port_number} &")
+    sh("flutter config --enable-web \
+        && flutter drive \
+           --driver=test_driver/integration_driver.dart \
+           --target=integration_test/app_test.dart \
+           -d web-server --release --browser-name safari")
   end
 end
 

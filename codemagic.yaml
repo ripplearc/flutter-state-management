@@ -199,9 +199,13 @@ workflows:
       - &run_web_chrome_integration_tests
         name: Flutter integration tests (Chrome)
         script: |
-          mkdir -p test-results
           bundle install
           bundle exec fastlane run_web_chrome_integration_tests
+      - &run_web_safari_integration_tests
+        name: Flutter integration tests (Safari)
+        script: |
+          bundle install
+          bundle exec fastlane run_web_safari_integration_tests
     publishing:
       email:
         recipients:
