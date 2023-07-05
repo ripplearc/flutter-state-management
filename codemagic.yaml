@@ -166,7 +166,6 @@ workflows:
         recipients:
           - ripplearc@gmail.com
   integration-tests:
-    ### How to trigger the UI tests
     ### How to run code coverage?
     ### Combine iOS and Web tests into one workflow because the Preparing build machine
     ### takes close to 1 minute while the test execution takes 2 minutes or less.artifacts:
@@ -188,6 +187,8 @@ workflows:
         - pattern: main
           include: true
           source: false
+    when:
+      condition: (not event.pull_request.draft) and (event.pull_request.labels[0].name == "UI Tests")
     scripts:
       - &run_ios_integration_tests
         name: Flutter integration tests (iOS)
@@ -200,12 +201,12 @@ workflows:
         name: Flutter integration tests (Chrome)
         script: |
           bundle install
-          bundle exec fastlane run_web_chrome_integration_tests
+          bundle exec fastlane run_web_chrome_integration_tests port:4444
       - &run_web_safari_integration_tests
         name: Flutter integration tests (Safari)
         script: |
           bundle install
-          bundle exec fastlane run_web_safari_integration_tests
+          bundle exec fastlane run_web_safari_integration_tests port:5555
     publishing:
       email:
         recipients:
