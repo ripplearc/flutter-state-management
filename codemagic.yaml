@@ -137,6 +137,8 @@ workflows:
     name: Unit & Widget Tests
     max_build_duration: 60
     environment:
+      groups:
+        - codecov
       flutter: 3.7.12
       xcode: 14.3
       cocoapods: default
@@ -159,7 +161,7 @@ workflows:
         script: |
           mkdir -p test-results
           bundle install
-          bundle exec fastlane run_unit_widget_tests test_report_path:test-results/unit_tests.json
+          bundle exec fastlane run_unit_widget_tests test_report_path:test-results/unit_tests.json code_coverage_target:$CODE_COVERAGE_TARGET incremental_code_coverage_target:$INCREMENTAL_CODE_COVERAGE_TARGET lcov_info_path:coverage/lcov.info
         test_report: test-results/unit_tests.json
     publishing:
       email:
