@@ -79,6 +79,7 @@ class FavoriteButton extends StatelessWidget {
   const FavoriteButton(
       {super.key, required this.onPress, required this.isFavorite});
 
+
   final VoidCallback onPress;
   final bool isFavorite;
 

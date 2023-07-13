@@ -137,6 +137,8 @@ workflows:
     name: Unit & Widget Tests
     max_build_duration: 60
     environment:
+      groups:
+        - codecov
       flutter: 3.7.12
       xcode: 14.3
       cocoapods: default
@@ -159,7 +161,7 @@ workflows:
         script: |
           mkdir -p test-results
           bundle install
-          bundle exec fastlane run_unit_widget_tests test_report_path:test-results/unit_tests.json
+          bundle exec fastlane run_unit_widget_tests test_report_path:test-results/unit_tests.json code_coverage_target:$CODE_COVERAGE_TARGET incremental_code_coverage_target:$INCREMENTAL_CODE_COVERAGE_TARGET lcov_info_path:coverage/lcov.info
         test_report: test-results/unit_tests.json
     publishing:
       email:
@@ -171,7 +173,7 @@ workflows:
     ### takes close to 1 minute while the test execution takes 2 minutes or less.artifacts:
     ### When the tests execution outweighs the build preparation time, it makes sense to split them.
     ### By splitting them, we can rerun them individually in the case of flaky tests.
-    name: iOS and Web Integration Tests
+    name: iOS and Web Integration/UI Tests
     max_build_duration: 60
     environment:
       flutter: 3.7.12
@@ -181,22 +183,30 @@ workflows:
       cache_paths: [ ]
     triggering:
       events:
-        # test each PR to main:
+        # test each PR to main (target):
         - pull_request
       branch_patterns:
         - pattern: main
           include: true
           source: false
-      tag_patterns: # Include or exclude watched tag labels
-        - pattern: '*'
-          include: false
-#        - pattern: excluded-tag
-#          include: false
-        - pattern: "ui-tests"
-          include: true
-#    when:
-#      condition: (not event.pull_request.draft) and (event.pull_request.labels[0].name == "UI Tests")
+    when:
+      condition: not event.pull_request.draft
     scripts:
+      - &do_not_run_ui_tests_if_not_ready
+        name: Exit build if not ready for integration tests
+        script: |
+          set -e
+          set -x
+          export COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo COMMIT_MSG
+          TAG="[ready-for-ui-tests]"
+          if [[ $COMMIT_MSG != *"$TAG"* ]]
+            then
+              echo "Commit needs to include '$TAG' in it's message."
+              exit 1
+            else 
+              echo "Commit message includes '$TAG', moving forward..."
+          fi
       - &run_ios_integration_tests
         name: Flutter integration tests (iOS)
         script: |
