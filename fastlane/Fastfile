@@ -81,6 +81,12 @@ def check_incremental_code_coverage(incremental_code_coverage_target, lcov_info_
   end
 end
 
+def upload_coverage_to_codecov(codecov_token)
+  sh("curl -Os https://uploader.codecov.io/latest/macos/codecov")
+  sh("chmod +x codecov")
+  sh("./codecov -t #{codecov_token}")
+end
+
 lane :run_unit_widget_tests do |options|
   test_report_path = options[:test_report_path]
 
@@ -95,6 +101,7 @@ lane :run_unit_widget_tests do |options|
 
   check_overall_code_coverage(code_coverage_target, lcov_info_path)
   check_incremental_code_coverage(incremental_code_coverage_target, lcov_info_path)
+  upload_coverage_to_codecov(options[:codecov_token])
 
 end
 
