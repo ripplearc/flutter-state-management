@@ -1,156 +1,16 @@
 # Tutorial: CI/CD for Flutter is a piece of cake with fastlane and Codemagic
 # https://blog.codemagic.io/ci-cd-for-flutter-with-fastlane-codemagic/
+
+import './helper/BuildAction.rb'
+import './helper/CodeCoverage.rb'
+import './lanes/TestLanes.rb'
+
 default_platform(:ios)
 
 RUNNING_ON_CI = ENV['CI'].to_s.downcase == 'true'
 APPLE_ID = ENV['TOD_APPLE_ID'].to_s
 # MATCH_PASSWORD = ENV['TOD_MATCH_PASSPHRASE'].to_s;
 
-def common_build_actions()
-  Dir.chdir ".." do
-    if (RUNNING_ON_CI == false) then
-      sh("flutter", "clean")
-    end
-    sh("flutter", "pub", "get")
-    sh("flutter", "analyze")
-  end
-end
-
-def close_driver_port(port)
-  command = <<~BASH
-    if nc -z localhost #{port}; then
-       sudo kill -9 $(lsof -t -i :#{port})
-    fi
-  BASH
-
-  sh(command, print_command: false)
-end
-
-def print_table(data)
-  max_length = data.max_by(&:length).length
-
-  puts 'Modified Files: 📝 '
-  puts '-' * max_length
-
-  data.each do |item|
-    puts item
-  end
-
-  puts '-' * max_length
-end
-
-# Test coverage explains with lcov on Flutter
-# https://www.etiennetheodore.com/test-coverage-explain-with-lcov-on-dart/
-def check_overall_code_coverage(code_coverage_target, lcov_info_path)
-  Dir.chdir('..') do
-    code_coverage = sh("lcov --summary #{lcov_info_path} | grep 'lines......' | cut -d ' ' -f 4 | cut -d '%' -f 1", log: false).strip.to_f
-
-    if code_coverage < code_coverage_target.to_f
-        message = "Overall code coverage #{code_coverage}%" +
-                    " is less than expected #{code_coverage_target}%"
-        UI.important(message)
-        UI.user_error!('Code coverage threshold not met ❌ ')
-    else
-        UI.message("Overall Code Coverage: #{code_coverage}% ✅ ")
-    end
-  end
-end
-
-def check_incremental_code_coverage(incremental_code_coverage_target, lcov_info_path)
-  Dir.chdir('..') do
-    sh("git fetch origin main:benchmark")
-    current_branch = sh("git rev-parse --abbrev-ref HEAD", log: false).strip
-    modified_files = sh("git diff --name-only benchmark -- 'lib/*'", log: false).strip.split("\n")
-    if modified_files.empty?
-      UI.important('No modified files found in the lib directory. ✅ ')
-      next
-    end
-    print_table(modified_files)
-
-    modified_files_argument = modified_files.join(' ')
-    sh("lcov --extract coverage/lcov.info #{modified_files_argument} --output-file coverage/incremental_lcov.info")
-
-    incremental_code_coverage = sh("lcov --summary coverage/incremental_lcov.info | grep 'lines......' | cut -d ' ' -f 4 | cut -d '%' -f 1", log: false).strip.to_f
-    if incremental_code_coverage < incremental_code_coverage_target.to_f
-       UI.important("Incremental code coverage #{incremental_code_coverage}%" +
-        " is less than expected #{incremental_code_coverage_target}%")
-       UI.user_error!("Incremental code coverage threshold not met ❌ ")
-    else
-        UI.message("Incremental Test Coverage for Modified Files in the lib Directory: #{incremental_code_coverage}% ✅ ")
-    end
-  end
-end
-
-def upload_coverage_to_codecov(codecov_token)
-  sh("curl -Os https://uploader.codecov.io/latest/macos/codecov")
-  sh("chmod +x codecov")
-  sh("./codecov -t #{codecov_token}")
-end
-
-lane :run_unit_widget_tests do |options|
-  test_report_path = options[:test_report_path]
-
-  Dir.chdir('..') do
-    sh('HOMEBREW_NO_AUTO_UPDATE=1 brew install lcov')
-    sh("flutter test --coverage --machine > #{test_report_path}")
-  end
-
-  code_coverage_target = options[:code_coverage_target]
-  incremental_code_coverage_target = options[:incremental_code_coverage_target]
-  lcov_info_path = options[:lcov_info_path]
-
-  check_overall_code_coverage(code_coverage_target, lcov_info_path)
-  check_incremental_code_coverage(incremental_code_coverage_target, lcov_info_path)
-  upload_coverage_to_codecov(options[:codecov_token])
-
-end
-
-
-lane :run_ios_integration_tests do |options|
-  test_report_path = options[:test_report_path]
-  # Execute ios integration tests
-  common_build_actions()
-  Dir.chdir ".." do
-    sh("xcrun simctl shutdown all \
-        && TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-16-4) \
-        && xcrun simctl boot $TEST_DEVICE \
-        && flutter -d $TEST_DEVICE test integration_test \
-        --machine > #{test_report_path}")
-  end
-end
-
-lane :run_web_chrome_integration_tests do |options|
-  port_number = options[:port]
-  # Execute Chrome integration tests
-  common_build_actions()
-  close_driver_port(port_number)
-  Dir.chdir ".." do
-    sh("brew upgrade --cask chromedriver \
-        && chromedriver --version")
-    Process.spawn("chromedriver --port=#{port_number} &")
-    sh("flutter config --enable-web \
-        && flutter drive \
-           --driver=test_driver/integration_driver.dart \
-           --target=integration_test/app_test.dart \
-           -d web-server --driver-port=#{port_number} --release --browser-name chrome")
-  end
-end
-
-lane :run_web_safari_integration_tests do |options|
-  port_number = options[:port]
-  # Execute Chrome integration tests
-  common_build_actions()
-  close_driver_port(port_number)
-  Dir.chdir ".." do
-    sh("sudo safaridriver --enable")
-    Process.spawn("safaridriver --port #{port_number} &")
-    sh("flutter config --enable-web \
-        && flutter drive \
-           --driver=test_driver/integration_driver.dart \
-           --target=integration_test/app_test.dart \
-           -d web-server --driver-port=#{port_number} --release --browser-name safari")
-  end
-end
 
 platform :ios do
   lane :setup_keychain do
