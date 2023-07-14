@@ -30,6 +30,15 @@ To run test coverage, try the following:
 flutter test --coverage; genhtml coverage/lcov.info -o coverage/html; open coverage/html/index.html
 ```
 
+
+## Test Coverage
+
+[![codecov badge](https://codecov.io/gh/ripplearc/flutter-state-management/branch/main/graph/badge.svg?token=${{secrets.CODECOV_TOKEN}})](https://codecov.io/gh/ripplearc/flutter-state-management)
+
+[![codecov badge](https://codecov.io/gh/ripplearc/flutter-state-management/branch/main/graphs/tree.svg?token=${{secrets.CODECOV_TOKEN}}))](https://codecov.io/gh/ripplearc/flutter-state-management)
+
+
+
 ## Widget and Integration Tests
 Widget and Integration tests are another essential part of app development. In this project, we show how to write Widget and Integration tests for the `BloC` approach.
 

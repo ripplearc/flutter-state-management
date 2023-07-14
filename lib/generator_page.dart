@@ -77,7 +77,9 @@ class _GeneratorPageState extends State<GeneratorPage> {
 /// random word from the user's [RandomWordState.favorites].
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton(
-      {super.key, required this.onPress, required this.isFavorite});
+      {super.key,
+        required this.onPress,
+        required this.isFavorite});
 
 
   final VoidCallback onPress;
