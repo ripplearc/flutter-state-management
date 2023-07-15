@@ -26,14 +26,13 @@ lane :run_unit_widget_tests do |options|
   check_overall_code_coverage(code_coverage_target, lcov_info_path)
   check_incremental_code_coverage(incremental_code_coverage_target, lcov_info_path)
   upload_coverage_to_codecov(options[:codecov_token])
-
 end
 
 lane :run_ios_integration_tests do |options|
   test_report_path = options[:test_report_path]
   # Execute ios integration tests
-  common_build_actions()
-  Dir.chdir ".." do
+  common_build_actions
+  Dir.chdir '..' do
     sh("xcrun simctl shutdown all \
         && TEST_DEVICE=$(xcrun simctl create test-device com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-16-4) \
         && xcrun simctl boot $TEST_DEVICE \
@@ -45,9 +44,9 @@ end
 lane :run_web_chrome_integration_tests do |options|
   port_number = options[:port]
   # Execute Chrome integration tests
-  common_build_actions()
+  common_build_actions
   close_driver_port(port_number)
-  Dir.chdir ".." do
+  Dir.chdir '..' do
     sh("brew upgrade --cask chromedriver \
         && chromedriver --version")
     Process.spawn("chromedriver --port=#{port_number} &")
@@ -62,10 +61,10 @@ end
 lane :run_web_safari_integration_tests do |options|
   port_number = options[:port]
   # Execute Chrome integration tests
-  common_build_actions()
+  common_build_actions
   close_driver_port(port_number)
-  Dir.chdir ".." do
-    sh("sudo safaridriver --enable")
+  Dir.chdir '..' do
+    sh('sudo safaridriver --enable')
     Process.spawn("safaridriver --port #{port_number} &")
     sh("flutter config --enable-web \
         && flutter drive \
