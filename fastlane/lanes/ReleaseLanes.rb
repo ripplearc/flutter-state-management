@@ -85,7 +85,7 @@ platform :ios do
     pilot(
       username: APPLE_ID,
       team_id: '120815547',
-      skip_submission: true,
+      skip_submission: false,
       skip_waiting_for_build_processing: true,
       apple_id: '6449834100'
     )
