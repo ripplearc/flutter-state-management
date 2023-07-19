@@ -26,12 +26,20 @@ workflows:
       - &increment_testflight_build_number
         name: Get the latest build number
         script: |
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number $APP_APPLE_ID --pre-release-version 0.0.2)
-          cd ./ios # avgtool must run in the folder where xcodeproj file is located, to edit the xcconfig file
-          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1)) 
-          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number $APP_APPLE_ID --pre-release-version 0.0.2) + 1))
-          #!/bin/sh
-          set -ex
+          VERSION_NUMBER=$(grep -o 'version: [0-9]\+\.[0-9]\+\.[0-9]\+' pubspec.yaml | awk '{print $2}')
+          echo "Version number from pubspec.yaml: $VERSION_NUMBER"
+          LATEST_BUILD_NUMBER=$(
+            app-store-connect get-latest-testflight-build-number $APP_APPLE_ID \
+            --pre-release-version $VERSION_NUMBER
+          );
+          cd ./ios;
+          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1));
+          BUILD_NUMBER=$(
+            app-store-connect get-latest-testflight-build-number $APP_APPLE_ID \
+            --pre-release-version $VERSION_NUMBER
+          );
+          #!/bin/sh;
+          set -ex;
           printenv
         ignore_failure: false
       - &build_ios_app
