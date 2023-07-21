@@ -103,8 +103,9 @@ platform :android do
 
     supply(
       aab: 'build/app/outputs/bundle/release/app-release.aab',
+      mapping: 'build/app/outputs/mapping/release/mapping.txt',
       json_key: 'google_play.json',
-      release_status: 'draft',
+      release_status: 'completed',
       track: 'internal',
       skip_upload_metadata: true,
       skip_upload_images: true,
