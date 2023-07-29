@@ -33,7 +33,7 @@ class _GeneratorPageState extends State<GeneratorPage> {
                   listKey: listKey,
                 ),
               ),
-              const Text("A random idea:"),
+              Text("A random idea:", style: Theme.of(context).textTheme.bodyMedium),
               WordCard(pair: state.current.text),
               const SizedBox(height: 10),
               _buildButtons(context),
@@ -77,10 +77,7 @@ class _GeneratorPageState extends State<GeneratorPage> {
 /// random word from the user's [RandomWordState.favorites].
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton(
-      {super.key,
-        required this.onPress,
-        required this.isFavorite});
-
+      {super.key, required this.onPress, required this.isFavorite});
 
   final VoidCallback onPress;
   final bool isFavorite;
