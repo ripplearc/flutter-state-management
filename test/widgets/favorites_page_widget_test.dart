@@ -2,22 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:namer_app/favorites_page.dart';
 import 'package:namer_app/random_word/bloc.dart';
-import 'package:mockito/annotations.dart';
 import 'package:namer_app/random_word/event.dart';
 import 'package:namer_app/repository/word_repository.dart';
-import '../helper/bloc_observer.dart';
+
 import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'favorites_page_test.mocks.dart';
+import 'favorites_page_widget_test.mocks.dart';
 
 
 void main() {
   final mockRandomWordFactory = MockRandomWordFactory();
   final randomWords = CircularWords();
-  Bloc.observer = TestBlocObserver();
   void setupCircularWords() {
     randomWords.reset();
     when(mockRandomWordFactory.generateRandomWord()).thenAnswer((_) {

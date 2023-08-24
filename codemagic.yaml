@@ -7,7 +7,7 @@ workflows:
         - app_store
         - app_store_credentials
         - match
-      flutter: 3.7.12
+      flutter: 3.13.0
       xcode: 14.3
       cocoapods: default
     cache:
@@ -65,7 +65,7 @@ workflows:
       groups:
         - google_play
         - keystore_credentials
-      flutter: 3.7.12
+      flutter: 3.13.0
     cache:
       cache_paths: [ ]
     triggering:
@@ -111,7 +111,7 @@ workflows:
         - app_store_credentials
         - google_play
         - keystore_credentials
-      flutter: 3.7.12
+      flutter: 3.13.0
       xcode: 14.3
       cocoapods: default
     cache:
@@ -141,14 +141,14 @@ workflows:
       email:
         recipients:
           - ripplearc@gmail.com
-  unit-and-widget-tests:
-    name: Unit & Widget Tests
+  unit-widget-golden-tests:
+    name: Unit, Widget & Golden Tests
     max_build_duration: 60
     environment:
       groups:
         - codecov
         - codecov_credentials
-      flutter: 3.7.12
+      flutter: 3.13.0
       xcode: 14.3
       cocoapods: default
     cache:
@@ -166,11 +166,11 @@ workflows:
         # set up local properties
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
       - &run_unit_tests
-        name: Run unit and widget tests
+        name: Run unit, widget, and golden tests
         script: |
           mkdir -p test-results
           bundle install
-          bundle exec fastlane run_unit_widget_tests \
+          bundle exec fastlane run_unit_widget_golden_tests \
             test_report_path:test-results/unit_tests.json \
             code_coverage_target:$CODE_COVERAGE_TARGET \
             codecov_token:$CODECOV_TOKEN \
@@ -181,6 +181,8 @@ workflows:
       email:
         recipients:
           - ripplearc@gmail.com
+    artifacts:
+      - test/golden/**/failures/*.png
   integration-tests:
     ### How to run code coverage?
     ### Combine iOS and Web tests into one workflow because the Preparing build machine
@@ -190,7 +192,7 @@ workflows:
     name: iOS and Web Integration/UI Tests
     max_build_duration: 60
     environment:
-      flutter: 3.7.12
+      flutter: 3.13.0
       xcode: 14.3
       cocoapods: default
     cache:
