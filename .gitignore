@@ -59,6 +59,7 @@ linked_*.ds
 unlinked.ds
 unlinked_spec.ds
 test-results/
+**/*.mocks.dart
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -124,6 +125,9 @@ Runner.ipa
 
 # Coverage
 coverage/
+
+# Goldens
+test/golden/**/failures/
 
 # Symbols
 app.*.symbols

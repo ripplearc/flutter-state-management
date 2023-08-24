@@ -11,9 +11,9 @@ def close_driver_port(port)
   sh(command, print_command: false)
 end
 
-lane :run_unit_widget_tests do |options|
+lane :run_unit_widget_golden_tests do |options|
   test_report_path = options[:test_report_path]
-
+  common_build_actions
   Dir.chdir('..') do
     sh('HOMEBREW_NO_AUTO_UPDATE=1 brew install lcov')
     sh("flutter test --coverage --machine > #{test_report_path}")

@@ -6,6 +6,7 @@ def common_build_actions()
       sh("flutter", "clean")
     end
     sh("flutter", "pub", "get")
+    sh('flutter pub run build_runner build')
     sh("flutter", "analyze")
   end
 end

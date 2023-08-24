@@ -1,5 +1,5 @@
 // write a widget test for the GenerateScreen widget
-// Path: test/widgets/generator_page_test.dart
+// Path: test/widgets/generator_page_widget_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +11,7 @@ import 'package:namer_app/repository/word_repository.dart';
 
 import '../helper/circular_words.dart';
 @GenerateNiceMocks([MockSpec<RandomWordFactory>()])
-import 'generator_page_test.mocks.dart';
+import 'generator_page_widget_test.mocks.dart';
 
 void main() {
   final mockRandomWordFactory = MockRandomWordFactory();

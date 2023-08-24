@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:namer_app/favorites_page.dart';
 import 'package:namer_app/generator_page.dart';
 
 import 'package:namer_app/main.dart';
@@ -24,12 +25,14 @@ void main() {
     return runApp(BlocProvider(
         create: (_) => RandomWordBloc(mockRandomWordFactory),
         child: MaterialApp(
-          title: "Namer App",
-          theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange)),
-          home: const MyHomePage(),
-        )));
+            title: "Namer App",
+            theme: ThemeData(
+                useMaterial3: true,
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: Colors.deepOrange)),
+            home: MyHomePage(
+                generatorPage: const GeneratorPage(),
+                favoritesPage: FavoritesPage(listKey: GlobalKey<AnimatedListState>())))));
   }
 
   setUp(() async {
